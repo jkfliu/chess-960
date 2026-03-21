@@ -1,0 +1,28 @@
+export const THEMES = {
+  clean: {
+    lightSquare: '#f0f0f0',
+    darkSquare:  '#6a9fb5',
+    highlight:   '#f6f669',
+    lastMove:    '#baca2b',
+    background:  '#f0f0f0',
+    text:        '#1a1a1a',
+    panelBg:     '#f8f8f8',
+    border:      '#dddddd',
+    buttonBg:    '#e2e8f0',
+    buttonText:  '#1a202c',
+    activeButton:'#3b82f6',
+  },
+  wood: {
+    lightSquare: '#ffce9e',
+    darkSquare:  '#d18b47',
+    highlight:   '#cdd26a',
+    lastMove:    '#aaa23a',
+    background:  '#2d4a35',
+    text:        '#f5e6d3',
+    panelBg:     '#243d2c',
+    border:      '#4a7060',
+    buttonBg:    '#2d5a3a',
+    buttonText:  '#f5e6d3',
+    activeButton:'#c0833a',
+  },
+};
