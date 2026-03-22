@@ -95,12 +95,20 @@ export function evaluate(chess) {
   return score;
 }
 
+// Captures (+2) and checks/mates (+1) are searched first to maximise pruning.
+function orderedMoves(chess) {
+  return chess.moves({ verbose: true }).sort((a, b) => {
+    const score = (m) => (m.captured ? 2 : 0) + (m.san.endsWith('+') || m.san.endsWith('#') ? 1 : 0);
+    return score(b) - score(a);
+  });
+}
+
 function alphaBeta(chess, depth, alpha, beta, isMaximizing) {
   if (depth === 0 || chess.isGameOver()) return evaluate(chess);
 
   let bestScore = isMaximizing ? -Infinity : Infinity;
 
-  for (const move of chess.moves()) {
+  for (const move of orderedMoves(chess)) {
     chess.move(move);
     const score = alphaBeta(chess, depth - 1, alpha, beta, !isMaximizing);
     chess.undo();
@@ -119,7 +127,7 @@ function alphaBeta(chess, depth, alpha, beta, isMaximizing) {
 }
 
 const DIFFICULTY = {
-  easy:   { depth: 1, noise: 300 },
+  easy:   { depth: 1, noise: 200 },
   medium: { depth: 3, noise: 50 },
   hard:   { depth: 5, noise: 0 },
 };

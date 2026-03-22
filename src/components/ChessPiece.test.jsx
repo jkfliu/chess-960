@@ -15,23 +15,19 @@ describe('ChessPiece', () => {
     }
   });
 
-  it('uses a 45×45 viewBox', () => {
+  it('applies drop-shadow filter style', () => {
     const { container } = render(<ChessPiece type="k" color="w" />);
-    expect(container.querySelector('svg').getAttribute('viewBox')).toBe('0 0 45 45');
+    expect(container.querySelector('svg').style.filter).toContain('drop-shadow');
   });
 
-  it('includes gradient defs for white pieces', () => {
+  it('uses ivory fill for white pieces', () => {
     const { container } = render(<ChessPiece type="q" color="w" />);
-    expect(container.querySelector('defs radialGradient')).not.toBeNull();
+    // jsdom normalises hex to rgb() in inline styles
+    expect(container.querySelector('svg').innerHTML).toContain('rgb(245, 240, 224)');
   });
 
-  it('includes gradient defs for black pieces', () => {
+  it('uses dark fill for black pieces', () => {
     const { container } = render(<ChessPiece type="q" color="b" />);
-    expect(container.querySelector('defs radialGradient')).not.toBeNull();
-  });
-
-  it('includes a drop shadow filter', () => {
-    const { container } = render(<ChessPiece type="p" color="w" />);
-    expect(container.querySelector('feDropShadow')).not.toBeNull();
+    expect(container.querySelector('svg').innerHTML).toContain('rgb(46, 46, 46)');
   });
 });
