@@ -1,4 +1,4 @@
-**Original Build Plan**
+## Original Build Plan
 https://claude.ai/public/artifacts/d9979e70-3266-4925-9fb4-b8b4993072ed
 
 Chess960 React Artifact — Build Plan
