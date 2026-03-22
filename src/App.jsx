@@ -9,6 +9,7 @@ import Toolbar from './components/Toolbar.jsx';
 import CapturedPieces from './components/CapturedPieces.jsx';
 import MoveHistory from './components/MoveHistory.jsx';
 import EvalBar from './components/EvalBar.jsx';
+import { buildPgn } from './lib/pgn.js';
 
 function getStatus(chess) {
   const turn = chess.turn();
@@ -28,7 +29,7 @@ export default function App() {
   const [themeName, setThemeName] = useState('clean');
 
   const {
-    chess, positionId, selectedSquare, legalMoves, lastMove,
+    chess, positionId, startingFen, selectedSquare, legalMoves, lastMove,
     capturedPieces, aiThinking, pendingPromotion, resetGame,
     handleSquareClick, handlePromotionChoice, handleUndo,
   } = useChessGame({ gameMode, playerColor, difficulty });
@@ -49,6 +50,14 @@ export default function App() {
   const history = chess.history();
   const status = getStatus(chess);
   const canUndo = history.length > 0 && !aiThinking;
+
+  function handleExportPgn() {
+    const pgn = buildPgn({ startingFen, moves: history, chess, gameMode, difficulty, playerColor });
+    const url = URL.createObjectURL(new Blob([pgn], { type: 'application/x-chess-pgn' }));
+    const a = Object.assign(document.createElement('a'), { href: url, download: `chess960-${positionId}.pgn` });
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div
@@ -116,7 +125,7 @@ export default function App() {
             <MoveHistory history={history} theme={currentTheme} />
           </div>
 
-          <div style={{ borderTop: `1px solid ${currentTheme.border}`, paddingTop: 12 }}>
+          <div style={{ borderTop: `1px solid ${currentTheme.border}`, paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
               onClick={handleUndo}
               disabled={!canUndo}
@@ -131,6 +140,21 @@ export default function App() {
               className="px-3 py-2 rounded text-sm font-medium"
             >
               ← Undo Move
+            </button>
+            <button
+              onClick={handleExportPgn}
+              disabled={history.length === 0}
+              style={{
+                backgroundColor: currentTheme.buttonBg,
+                color: currentTheme.buttonText,
+                border: `1px solid ${currentTheme.border}`,
+                opacity: history.length === 0 ? 0.4 : 1,
+                cursor: history.length === 0 ? 'default' : 'pointer',
+                width: '100%',
+              }}
+              className="px-3 py-2 rounded text-sm font-medium"
+            >
+              Export PGN
             </button>
           </div>
         </div>

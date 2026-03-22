@@ -21,6 +21,7 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
 
   const [tick, setTick] = useState(0);
   const [positionId, setPositionId] = useState(initId);
+  const [startingFen, setStartingFen] = useState(() => positionToFen(initId));
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [legalMoves, setLegalMoves] = useState([]);
   const [lastMove, setLastMove] = useState(null);
@@ -56,8 +57,10 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
   // ── Reset game ──────────────────────────────────────────────────────────────
   const resetGame = useCallback((id) => {
     aiSeqRef.current++;
-    chessRef.current = new Chess(positionToFen(id));
+    const fen = positionToFen(id);
+    chessRef.current = new Chess(fen);
     setPositionId(id);
+    setStartingFen(fen);
     setCapturedPieces({ w: [], b: [] });
     setLastMove(null);
     setSelectedSquare(null);
@@ -152,6 +155,7 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
   return {
     chess: chessRef.current,
     positionId,
+    startingFen,
     selectedSquare,
     legalMoves,
     lastMove,
