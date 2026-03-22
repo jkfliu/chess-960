@@ -67,10 +67,10 @@ describe('Toolbar', () => {
     expect(onDifficultyChange).toHaveBeenCalledWith('hard');
   });
 
-  it('calls onNewGame when New Game is clicked', async () => {
+  it('calls onNewGame when Restart is clicked', async () => {
     const onNewGame = vi.fn();
     render(<Toolbar {...baseProps} onNewGame={onNewGame} />);
-    await userEvent.click(screen.getByRole('button', { name: 'New Game' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Restart' }));
     expect(onNewGame).toHaveBeenCalledOnce();
   });
 

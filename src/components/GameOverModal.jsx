@@ -63,7 +63,7 @@ export default function GameOverModal({ chess, theme, onNewGame, onRandomGame })
             onClick={onNewGame}
             style={{ ...BTN_BASE, backgroundColor: theme.activeButton, color: '#fff', border: 'none' }}
           >
-            Replay game using same starting position
+            Restart game
           </button>
           <button
             onClick={onRandomGame}

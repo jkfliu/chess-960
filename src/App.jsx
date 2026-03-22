@@ -8,6 +8,7 @@ import GameOverModal from './components/GameOverModal.jsx';
 import Toolbar from './components/Toolbar.jsx';
 import CapturedPieces from './components/CapturedPieces.jsx';
 import MoveHistory from './components/MoveHistory.jsx';
+import EvalBar from './components/EvalBar.jsx';
 
 function getStatus(chess) {
   const turn = chess.turn();
@@ -72,8 +73,10 @@ export default function App() {
       />
 
       <div className="flex flex-1 gap-6 p-6 items-start justify-center flex-wrap">
-        {/* Board */}
-        <div style={{ width: '75vmin', minWidth: 240, position: 'relative' }}>
+        {/* Board + eval bar */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'stretch' }}>
+          <EvalBar chess={chess} theme={currentTheme} flipped={flipped} />
+          <div style={{ width: '75vmin', minWidth: 240, position: 'relative' }}>
           <Board
             chess={chess}
             selectedSquare={selectedSquare}
@@ -81,6 +84,7 @@ export default function App() {
             lastMove={lastMove}
             onSquareClick={handleSquareClick}
             theme={currentTheme}
+            themeName={themeName}
             flipped={flipped}
           />
           {pendingPromotion && (
@@ -98,6 +102,7 @@ export default function App() {
             onNewGame={() => resetGame(positionId)}
             onRandomGame={() => resetGame(randomPositionId())}
           />
+          </div>
         </div>
 
         {/* Sidebar */}
@@ -125,7 +130,7 @@ export default function App() {
               }}
               className="px-3 py-2 rounded text-sm font-medium"
             >
-              ⟵ Undo Move
+              ← Undo Move
             </button>
           </div>
         </div>

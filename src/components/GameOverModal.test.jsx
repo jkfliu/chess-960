@@ -68,7 +68,7 @@ describe('GameOverModal', () => {
     const onNewGame = vi.fn();
     const chess = makeChess({ isGameOver: () => true, isCheckmate: () => true, turn: () => 'b' });
     render(<GameOverModal chess={chess} theme={theme} onNewGame={onNewGame} onRandomGame={() => {}} />);
-    await userEvent.click(screen.getByText('Replay game using same starting position'));
+    await userEvent.click(screen.getByText('Restart game'));
     expect(onNewGame).toHaveBeenCalled();
   });
 

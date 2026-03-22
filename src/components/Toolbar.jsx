@@ -101,8 +101,8 @@ export default function Toolbar({
 
       {/* Game actions */}
       <Group label="Game" currentTheme={currentTheme} >
+        <Btn onClick={onNewGame} theme={currentTheme}>Restart</Btn>
         <Btn onClick={onRandomGame} theme={currentTheme}>Random</Btn>
-        <Btn onClick={onNewGame} theme={currentTheme}>New Game</Btn>
       </Group>
 
       {/* AI thinking indicator */}
