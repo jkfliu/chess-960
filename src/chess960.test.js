@@ -61,11 +61,10 @@ describe('positionToFen', () => {
     expect(fen.split(' ')[2]).toBe('KQkq');
   });
 
-  it('non-standard positions have no castling rights', () => {
-    for (const id of [0, 1, 100, 200, 959]) {
-      if (id === 518) continue;
+  it('all positions have full castling rights', () => {
+    for (const id of [0, 1, 100, 200, 518, 959]) {
       const fen = positionToFen(id);
-      expect(fen.split(' ')[2]).toBe('-');
+      expect(fen.split(' ')[2]).toBe('KQkq');
     }
   });
 

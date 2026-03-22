@@ -3,6 +3,8 @@ import { THEMES } from './themes/index.js';
 import { randomPositionId } from './constants.js';
 import { useChessGame } from './hooks/useChessGame.js';
 import Board from './components/Board.jsx';
+import PromotionPicker from './components/PromotionPicker.jsx';
+import GameOverModal from './components/GameOverModal.jsx';
 import Toolbar from './components/Toolbar.jsx';
 import CapturedPieces from './components/CapturedPieces.jsx';
 import MoveHistory from './components/MoveHistory.jsx';
@@ -26,7 +28,8 @@ export default function App() {
 
   const {
     chess, positionId, selectedSquare, legalMoves, lastMove,
-    capturedPieces, aiThinking, resetGame, handleSquareClick, handleUndo,
+    capturedPieces, aiThinking, pendingPromotion, resetGame,
+    handleSquareClick, handlePromotionChoice, handleUndo,
   } = useChessGame({ gameMode, playerColor, difficulty });
 
   const currentTheme = THEMES[themeName];
@@ -70,7 +73,7 @@ export default function App() {
 
       <div className="flex flex-1 gap-6 p-6 items-start justify-center flex-wrap">
         {/* Board */}
-        <div style={{ width: '75vmin', minWidth: 240 }}>
+        <div style={{ width: '75vmin', minWidth: 240, position: 'relative' }}>
           <Board
             chess={chess}
             selectedSquare={selectedSquare}
@@ -79,6 +82,21 @@ export default function App() {
             onSquareClick={handleSquareClick}
             theme={currentTheme}
             flipped={flipped}
+          />
+          {pendingPromotion && (
+            <PromotionPicker
+              color={chess.turn()}
+              toSquare={pendingPromotion.to}
+              flipped={flipped}
+              onChoice={handlePromotionChoice}
+              theme={currentTheme}
+            />
+          )}
+          <GameOverModal
+            chess={chess}
+            theme={currentTheme}
+            onNewGame={() => resetGame(positionId)}
+            onRandomGame={() => resetGame(randomPositionId())}
           />
         </div>
 

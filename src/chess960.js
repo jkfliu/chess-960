@@ -61,6 +61,7 @@ export function positionToFen(id) {
   const rank = generateChess960Rank(id);
   const blackRank = rank.join('');
   const whiteRank = rank.map(p => p.toUpperCase()).join('');
-  const castling = blackRank === 'rnbqkbnr' ? 'KQkq' : '-';
-  return `${blackRank}/pppppppp/8/8/8/8/PPPPPPPP/${whiteRank} w ${castling} - 0 1`;
+  // All Chess960 positions have full castling rights; chessops resolves the
+  // actual rook squares from the piece positions at runtime.
+  return `${blackRank}/pppppppp/8/8/8/8/PPPPPPPP/${whiteRank} w KQkq - 0 1`;
 }

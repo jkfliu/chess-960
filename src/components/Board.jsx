@@ -1,7 +1,5 @@
 import Square from './Square';
-
-const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-const RANKS = [8, 7, 6, 5, 4, 3, 2, 1];
+import { FILES, RANKS } from '../constants.js';
 
 export default function Board({ chess, selectedSquare, legalMoves, lastMove, onSquareClick, theme, flipped }) {
   const board = chess.board();

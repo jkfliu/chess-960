@@ -1,4 +1,4 @@
-import { Chess } from 'chess.js';
+import { Chess } from '../lib/Chess.js';
 import { getBestMove } from './ai.js';
 
 self.onmessage = ({ data: { fen, difficulty, seq } }) => {

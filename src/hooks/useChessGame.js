@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Chess } from 'chess.js';
+import { Chess } from '../lib/Chess.js';
 import { positionToFen } from '../chess960.js';
 import { randomPositionId } from '../constants.js';
 import AIWorker from '../engine/ai.worker.js?worker';
@@ -26,6 +26,7 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
   const [lastMove, setLastMove] = useState(null);
   const [capturedPieces, setCapturedPieces] = useState({ w: [], b: [] });
   const [aiThinking, setAiThinking] = useState(false);
+  const [pendingPromotion, setPendingPromotion] = useState(null);
 
   const workerRef = useRef(null);
   const aiSeqRef = useRef(0);
@@ -62,6 +63,7 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
     setSelectedSquare(null);
     setLegalMoves([]);
     setAiThinking(false);
+    setPendingPromotion(null);
     setTick(t => t + 1);
   }, []);
 
@@ -87,10 +89,15 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
     const chess = chessRef.current;
     if (chess.isGameOver()) return;
     if (aiThinking) return;
+    if (pendingPromotion) return;
     if (gameMode === '1p' && chess.turn() !== playerColor) return;
 
     if (selectedSquare && legalMoves.includes(square)) {
-      const result = chess.move({ from: selectedSquare, to: square, promotion: 'q' });
+      if (chess.isPromotion(selectedSquare, square)) {
+        setPendingPromotion({ from: selectedSquare, to: square });
+        return;
+      }
+      const result = chess.move({ from: selectedSquare, to: square });
       if (result) {
         setLastMove({ from: result.from, to: result.to });
         setCapturedPieces(capturedFromHistory(chess));
@@ -110,7 +117,23 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
       setSelectedSquare(null);
       setLegalMoves([]);
     }
-  }, [selectedSquare, legalMoves, aiThinking, gameMode, playerColor]);
+  }, [selectedSquare, legalMoves, aiThinking, pendingPromotion, gameMode, playerColor]);
+
+  // ── Promotion choice ─────────────────────────────────────────────────────────
+  const handlePromotionChoice = useCallback((piece) => {
+    if (!pendingPromotion) return;
+    const chess = chessRef.current;
+    const { from, to } = pendingPromotion;
+    const result = chess.move({ from, to, promotion: piece });
+    if (result) {
+      setLastMove({ from: result.from, to: result.to });
+      setCapturedPieces(capturedFromHistory(chess));
+    }
+    setSelectedSquare(null);
+    setLegalMoves([]);
+    setPendingPromotion(null);
+    setTick(t => t + 1);
+  }, [pendingPromotion]);
 
   // ── Undo ────────────────────────────────────────────────────────────────────
   const handleUndo = useCallback(() => {
@@ -134,8 +157,10 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
     lastMove,
     capturedPieces,
     aiThinking,
+    pendingPromotion,
     resetGame,
     handleSquareClick,
+    handlePromotionChoice,
     handleUndo,
   };
 }

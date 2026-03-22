@@ -96,11 +96,12 @@ export function evaluate(chess) {
 }
 
 // Captures (+2) and checks/mates (+1) are searched first to maximise pruning.
+function moveScore(m) {
+  return (m.captured ? 2 : 0) + (m.san.endsWith('+') || m.san.endsWith('#') ? 1 : 0);
+}
+
 function orderedMoves(chess) {
-  return chess.moves({ verbose: true }).sort((a, b) => {
-    const score = (m) => (m.captured ? 2 : 0) + (m.san.endsWith('+') || m.san.endsWith('#') ? 1 : 0);
-    return score(b) - score(a);
-  });
+  return chess.moves({ verbose: true }).sort((a, b) => moveScore(b) - moveScore(a));
 }
 
 function alphaBeta(chess, depth, alpha, beta, isMaximizing) {
@@ -134,7 +135,7 @@ const DIFFICULTY = {
 
 export function getBestMove(chess, difficulty = 'medium') {
   const { depth, noise } = DIFFICULTY[difficulty];
-  const moves = chess.moves();
+  const moves = orderedMoves(chess);
   if (moves.length === 0) return null;
 
   const isMaximizing = chess.turn() === 'w';
@@ -155,5 +156,5 @@ export function getBestMove(chess, difficulty = 'medium') {
     }
   }
 
-  return bestMove;
+  return bestMove.san;
 }
