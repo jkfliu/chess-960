@@ -29,7 +29,7 @@ export default function App() {
   const [themeName, setThemeName] = useState('clean');
 
   const {
-    chess, positionId, startingFen, selectedSquare, legalMoves, lastMove,
+    chess, history, positionId, startingFen, selectedSquare, legalMoves, lastMove,
     capturedPieces, aiThinking, pendingPromotion, resetGame,
     handleSquareClick, handlePromotionChoice, handleUndo,
   } = useChessGame({ gameMode, playerColor, difficulty });
@@ -47,7 +47,6 @@ export default function App() {
     resetGame(positionId);
   };
 
-  const history = chess.history();
   const status = getStatus(chess);
   const canUndo = history.length > 0 && !aiThinking;
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Chess } from '../lib/Chess.js';
 import { positionToFen } from '../chess960.js';
 import { randomPositionId } from '../constants.js';
@@ -152,8 +152,11 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
     setTick(t => t + 1);
   }, [gameMode]);
 
+  const history = useMemo(() => chessRef.current.history(), [tick]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return {
     chess: chessRef.current,
+    history,
     positionId,
     startingFen,
     selectedSquare,
