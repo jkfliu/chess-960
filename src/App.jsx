@@ -106,6 +106,7 @@ export default function App() {
             />
           )}
           <GameOverModal
+            key={startingFen}
             chess={chess}
             theme={currentTheme}
             onNewGame={() => resetGame(positionId)}

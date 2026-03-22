@@ -79,4 +79,18 @@ describe('GameOverModal', () => {
     await userEvent.click(screen.getByText('Start new random game'));
     expect(onRandomGame).toHaveBeenCalled();
   });
+
+  it('closes when × button is clicked', async () => {
+    const chess = makeChess({ isGameOver: () => true, isCheckmate: () => true, turn: () => 'b' });
+    render(<GameOverModal chess={chess} theme={theme} onNewGame={() => {}} onRandomGame={() => {}} />);
+    await userEvent.click(screen.getByText('×'));
+    expect(screen.queryByText('White wins')).toBeNull();
+  });
+
+  it('closes when backdrop is clicked', async () => {
+    const chess = makeChess({ isGameOver: () => true, isCheckmate: () => true, turn: () => 'b' });
+    const { container } = render(<GameOverModal chess={chess} theme={theme} onNewGame={() => {}} onRandomGame={() => {}} />);
+    await userEvent.click(container.firstChild);
+    expect(screen.queryByText('White wins')).toBeNull();
+  });
 });

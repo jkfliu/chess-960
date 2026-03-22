@@ -1,4 +1,7 @@
-import { PIECE_VALUES, PIECE_GLYPHS } from '../constants.js';
+import { Piece } from '@chessire/pieces';
+import { PIECE_VALUES } from '../constants.js';
+
+const PIECE_MAP = { k: 'K', q: 'Q', r: 'R', b: 'B', n: 'N', p: 'P' };
 
 function materialScore(pieces) {
   return pieces.reduce((sum, p) => sum + (PIECE_VALUES[p.type] ?? 0), 0);
@@ -7,11 +10,17 @@ function materialScore(pieces) {
 function PieceRow({ pieces }) {
   const sorted = [...pieces].sort((a, b) => PIECE_VALUES[b.type] - PIECE_VALUES[a.type]);
   return (
-    <div className="flex flex-wrap gap-0.5 min-h-6">
+    <div className="flex flex-wrap gap-0.5 min-h-6 items-center">
       {sorted.map((p, i) => (
-        <span key={i} style={{ fontSize: 18, lineHeight: 1 }}>
-          {PIECE_GLYPHS[p.color][p.type]}
-        </span>
+        <Piece
+          key={i}
+          piece={PIECE_MAP[p.type]}
+          color={p.color === 'w' ? 'white' : 'black'}
+          fillColor={p.color === 'w' ? '#f5f0e0' : '#2e2e2e'}
+          strokeColor={p.color === 'w' ? '#1a1a1a' : '#c8c8c8'}
+          width={20}
+          style={{ filter: 'drop-shadow(1px 2px 2px rgba(0,0,0,0.4))' }}
+        />
       ))}
     </div>
   );

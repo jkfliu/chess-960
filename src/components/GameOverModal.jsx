@@ -6,8 +6,11 @@ const BTN_BASE = {
   cursor: 'pointer',
 };
 
+import { useState } from 'react';
+
 export default function GameOverModal({ chess, theme, onNewGame, onRandomGame }) {
-  if (!chess.isGameOver()) return null;
+  const [dismissed, setDismissed] = useState(false);
+  if (!chess.isGameOver() || dismissed) return null;
 
   let title, subtitle;
   if (chess.isCheckmate()) {
@@ -30,6 +33,7 @@ export default function GameOverModal({ chess, theme, onNewGame, onRandomGame })
 
   return (
     <div
+      onClick={() => setDismissed(true)}
       style={{
         position: 'absolute',
         inset: 0,
@@ -42,7 +46,9 @@ export default function GameOverModal({ chess, theme, onNewGame, onRandomGame })
       }}
     >
       <div
+        onClick={e => e.stopPropagation()}
         style={{
+          position: 'relative',
           backgroundColor: theme.panelBg,
           border: `2px solid ${theme.border}`,
           borderRadius: 8,
@@ -52,6 +58,24 @@ export default function GameOverModal({ chess, theme, onNewGame, onRandomGame })
           minWidth: 200,
         }}
       >
+        <button
+          onClick={() => setDismissed(true)}
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 10,
+            background: 'none',
+            border: 'none',
+            fontSize: 18,
+            lineHeight: 1,
+            cursor: 'pointer',
+            color: theme.text,
+            opacity: 0.5,
+            padding: '2px 4px',
+          }}
+        >
+          ×
+        </button>
         <div style={{ fontSize: 28, fontWeight: 700, color: theme.text, marginBottom: 4 }}>
           {title}
         </div>
