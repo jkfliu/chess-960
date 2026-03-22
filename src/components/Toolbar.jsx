@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 function Btn({ active, onClick, children, theme, disabled }) {
   return (
     <button
@@ -34,18 +36,25 @@ export default function Toolbar({
   onModeChange, onDifficultyChange, onPositionIdLoad, onNewGame, onRandomGame,
   onThemeChange, onPlayerColorChange,
 }) {
-  return (
+  const detailsRef = useRef(null);
+
+  // Close on mobile after first paint (starts open to avoid layout shift on desktop)
+  useEffect(() => {
+    const isMobile = typeof window.matchMedia === 'function' &&
+      window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (isMobile && detailsRef.current) detailsRef.current.open = false;
+  }, []);
+
+  const content = (
     <div
       className="flex flex-wrap items-end gap-6 px-6 py-4"
-      style={{ backgroundColor: currentTheme.panelBg, borderBottom: `1px solid ${currentTheme.border}` }}
+      style={{ backgroundColor: currentTheme.panelBg }}
     >
-      {/* Mode */}
       <Group label="Mode" currentTheme={currentTheme}>
         <Btn active={gameMode === '1p'} onClick={() => onModeChange('1p')} theme={currentTheme}>1P</Btn>
         <Btn active={gameMode === '2p'} onClick={() => onModeChange('2p')} theme={currentTheme}>2P</Btn>
       </Group>
 
-      {/* Player color — 1P only */}
       {gameMode === '1p' && (
         <Group label="Play as" currentTheme={currentTheme}>
           <Btn active={playerColor === 'w'} onClick={() => onPlayerColorChange('w')} theme={currentTheme}>White</Btn>
@@ -53,7 +62,6 @@ export default function Toolbar({
         </Group>
       )}
 
-      {/* Difficulty — 1P only */}
       {gameMode === '1p' && (
         <Group label="Difficulty" currentTheme={currentTheme}>
           {['easy', 'medium', 'hard'].map(d => (
@@ -64,7 +72,6 @@ export default function Toolbar({
         </Group>
       )}
 
-      {/* Position ID */}
       <Group label="Position" currentTheme={currentTheme}>
         <input
           type="number"
@@ -90,7 +97,6 @@ export default function Toolbar({
         />
       </Group>
 
-      {/* Theme */}
       <Group label="Theme" currentTheme={currentTheme}>
         {[['clean', 'Clean'], ['wood', 'Wood'], ['starwars', 'Star Wars']].map(([key, label]) => (
           <Btn key={key} active={themeName === key} onClick={() => onThemeChange(key)} theme={currentTheme}>
@@ -99,20 +105,44 @@ export default function Toolbar({
         ))}
       </Group>
 
-      {/* Game actions */}
-      <Group label="Game" currentTheme={currentTheme} >
+      <Group label="Game" currentTheme={currentTheme}>
         <Btn onClick={onNewGame} theme={currentTheme}>Restart</Btn>
         <Btn onClick={onRandomGame} theme={currentTheme}>Random</Btn>
       </Group>
 
-      {/* AI thinking indicator */}
-      {aiThinking && (
-        <div className="flex flex-col justify-end pb-0.5 ml-auto">
-          <span style={{ color: currentTheme.text, fontSize: 12, opacity: 0.5 }}>
-            AI thinking…
-          </span>
-        </div>
-      )}
+      <div className="flex flex-col justify-end pb-0.5 ml-auto" style={{ visibility: aiThinking ? 'visible' : 'hidden' }}>
+        <span style={{ color: currentTheme.text, fontSize: 12, opacity: 0.5 }}>
+          AI thinking…
+        </span>
+      </div>
     </div>
+  );
+
+  return (
+    <details
+      ref={detailsRef}
+      open
+      style={{ borderBottom: `1px solid ${currentTheme.border}` }}
+    >
+      {/* Summary visible on mobile only (hidden via CSS on desktop) */}
+      <summary
+        className="toolbar-summary"
+        style={{
+          backgroundColor: currentTheme.panelBg,
+          color: currentTheme.text,
+          padding: '10px 16px',
+          fontSize: 14,
+          fontWeight: 600,
+          cursor: 'pointer',
+          listStyle: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        ⚙ Game Options
+      </summary>
+      {content}
+    </details>
   );
 }

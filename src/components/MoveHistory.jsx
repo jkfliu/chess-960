@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 export default function MoveHistory({ history, theme }) {
-  const bottomRef = useRef(null);
+  const listRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [history]);
 
   // Pair moves: [[w_move, b_move], ...]
@@ -19,6 +19,7 @@ export default function MoveHistory({ history, theme }) {
         Move History
       </div>
       <div
+        ref={listRef}
         className="overflow-y-auto text-sm font-mono"
         style={{
           maxHeight: '180px',
@@ -37,7 +38,6 @@ export default function MoveHistory({ history, theme }) {
             </div>
           ))
         )}
-        <div ref={bottomRef} />
       </div>
     </div>
   );

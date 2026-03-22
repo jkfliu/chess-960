@@ -88,7 +88,8 @@ describe('Toolbar', () => {
 
   it('hides AI thinking indicator when aiThinking is false', () => {
     render(<Toolbar {...baseProps} aiThinking={false} />);
-    expect(screen.queryByText(/ai thinking/i)).toBeNull();
+    const el = screen.getByText(/ai thinking/i);
+    expect(el.closest('[style*="visibility"]').style.visibility).toBe('hidden');
   });
 
   it('calls onThemeChange with "wood" when Wood is clicked', async () => {

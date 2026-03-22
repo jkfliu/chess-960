@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Square from './Square';
+import ChessPiece from './ChessPiece.jsx';
 import { FILES, RANKS } from '../constants.js';
 
 // Fixed star positions so they don't shift on every render
@@ -38,6 +39,103 @@ export default function Board({ chess, selectedSquare, legalMoves, lastMove, onS
   const ranks = flipped ? [...RANKS].reverse() : RANKS;
   const files = flipped ? [...FILES].reverse() : FILES;
 
+  // ── Touch drag ──────────────────────────────────────────────────────────────
+  const boardRef    = useRef(null);
+  const ghostRef    = useRef(null);
+  const [dragFrom,  setDragFrom]  = useState(null);
+  const [dragPiece, setDragPiece] = useState(null);
+
+  // Always-fresh ref so event listeners never go stale
+  const dataRef = useRef(null);
+  dataRef.current = { board, files, ranks, onSquareClick, chess };
+
+  useEffect(() => {
+    const boardEl = boardRef.current;
+    if (!boardEl) return;
+
+    let touchDownSq = null;
+    let isDragging  = false;
+    let startX = 0, startY = 0;
+
+    function squareAt(clientX, clientY) {
+      const rect = boardEl.getBoundingClientRect();
+      const { files: f, ranks: r } = dataRef.current;
+      const size = rect.width / 8;
+      const fi = Math.floor((clientX - rect.left) / size);
+      const ri = Math.floor((clientY - rect.top)  / size);
+      if (fi < 0 || fi > 7 || ri < 0 || ri > 7) return null;
+      return `${f[fi]}${r[ri]}`;
+    }
+
+    function onTouchStart(e) {
+      const touch = e.touches[0];
+      const sq = squareAt(touch.clientX, touch.clientY);
+      if (!sq) return;
+      const { board: b, chess: c } = dataRef.current;
+      const rank = 8 - parseInt(sq[1]);
+      const file = FILES.indexOf(sq[0]);
+      const piece = b[rank]?.[file];
+      if (!piece || piece.color !== c.turn()) return;
+      e.preventDefault();
+      touchDownSq = sq;
+      startX = touch.clientX;
+      startY = touch.clientY;
+    }
+
+    function onTouchMove(e) {
+      if (!touchDownSq) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (!isDragging) {
+        if (Math.abs(touch.clientX - startX) + Math.abs(touch.clientY - startY) < 8) return;
+        isDragging = true;
+        const { board: b, onSquareClick: osc } = dataRef.current;
+        const rank = 8 - parseInt(touchDownSq[1]);
+        const file = FILES.indexOf(touchDownSq[0]);
+        const piece = b[rank]?.[file];
+        if (piece) {
+          setDragPiece(piece);
+          setDragFrom(touchDownSq);
+          osc(touchDownSq); // highlight legal moves
+        }
+      }
+      if (isDragging && ghostRef.current) {
+        const size = boardEl.getBoundingClientRect().width / 8;
+        ghostRef.current.style.display = 'block';
+        ghostRef.current.style.left    = `${touch.clientX}px`;
+        ghostRef.current.style.top     = `${touch.clientY}px`;
+        ghostRef.current.style.width   = `${size}px`;
+        ghostRef.current.style.height  = `${size}px`;
+      }
+    }
+
+    function onTouchEnd(e) {
+      const touch = e.changedTouches[0];
+      if (isDragging) {
+        e.preventDefault();
+        isDragging = false;
+        if (ghostRef.current) ghostRef.current.style.display = 'none';
+        setDragFrom(null);
+        setDragPiece(null);
+        const toSq = squareAt(touch.clientX, touch.clientY);
+        if (toSq) dataRef.current.onSquareClick(toSq);
+      } else if (touchDownSq) {
+        // Tap: e.preventDefault() on touchstart suppressed the synthetic click, so fire manually
+        dataRef.current.onSquareClick(touchDownSq);
+      }
+      touchDownSq = null;
+    }
+
+    boardEl.addEventListener('touchstart', onTouchStart, { passive: false });
+    boardEl.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    boardEl.addEventListener('touchend',   onTouchEnd,   { passive: false });
+    return () => {
+      boardEl.removeEventListener('touchstart', onTouchStart);
+      boardEl.removeEventListener('touchmove',  onTouchMove);
+      boardEl.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, []);
+
   return (
     <div
       className="relative"
@@ -46,7 +144,7 @@ export default function Board({ chess, selectedSquare, legalMoves, lastMove, onS
         userSelect: 'none',
       }}
     >
-      <div className="grid grid-cols-8">
+      <div ref={boardRef} className="grid grid-cols-8" style={{ touchAction: 'none' }}>
         {ranks.map((rank, rankIdx) =>
           files.map((file, fileIdx) => {
             const square = `${file}${rank}`;
@@ -68,12 +166,27 @@ export default function Board({ chess, selectedSquare, legalMoves, lastMove, onS
                 isSelected={isSelected}
                 isHighlight={isHighlight}
                 isLastMove={isLastMove}
+                isDragging={dragFrom === square}
                 onClick={() => onSquareClick(square)}
                 theme={theme}
               />
             );
           })
         )}
+      </div>
+
+      {/* Ghost piece follows finger during drag */}
+      <div
+        ref={ghostRef}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+          zIndex: 1000,
+        }}
+      >
+        {dragPiece && <ChessPiece type={dragPiece.type} color={dragPiece.color} />}
       </div>
 
       {themeName === 'starwars' && (

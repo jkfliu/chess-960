@@ -21,7 +21,7 @@ export default function EvalBar({ chess, theme, flipped }) {
   const bottomPct = flipped ? blackPct : whitePct;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, width: 20, overflow: 'hidden' }}>
       <div
         style={{
           width: 14,

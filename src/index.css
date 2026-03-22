@@ -13,3 +13,15 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Toolbar summary: hidden on desktop, shown on mobile */
+.toolbar-summary {
+  display: none;
+}
+.toolbar-summary::-webkit-details-marker { display: none; }
+
+@media (hover: none) and (pointer: coarse) {
+  .toolbar-summary {
+    display: flex;
+  }
+}
