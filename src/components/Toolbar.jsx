@@ -92,9 +92,9 @@ export default function Toolbar({
 
       {/* Theme */}
       <Group label="Theme" currentTheme={currentTheme}>
-        {['clean', 'wood'].map(t => (
-          <Btn key={t} active={themeName === t} onClick={() => onThemeChange(t)} theme={currentTheme}>
-            {t.charAt(0).toUpperCase() + t.slice(1)}
+        {[['clean', 'Clean'], ['wood', 'Wood'], ['starwars', 'Star Wars']].map(([key, label]) => (
+          <Btn key={key} active={themeName === key} onClick={() => onThemeChange(key)} theme={currentTheme}>
+            {label}
           </Btn>
         ))}
       </Group>

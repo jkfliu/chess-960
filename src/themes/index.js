@@ -25,4 +25,17 @@ export const THEMES = {
     buttonText:  '#f5e6d3',
     activeButton:'#c0833a',
   },
+  starwars: {
+    lightSquare: '#1a1a2e',
+    darkSquare:  '#0d0d1a',
+    highlight:   '#00d4ff',
+    lastMove:    '#ff4500',
+    background:  '#05050f',
+    text:        '#c8d6e5',
+    panelBg:     '#0a0a1f',
+    border:      '#1e3a5f',
+    buttonBg:    '#0f1f3d',
+    buttonText:  '#8ab4d4',
+    activeButton:'#e8242c',
+  },
 };
