@@ -152,7 +152,7 @@ js{
 
 TODO — Post MVP
 
- Board skins: wood, neon, marble  ✅ wood + starwars themes shipped
+ Board skins: wood, neon, marble  ✅ wood + Star Wars themes shipped
  Piece skin variants: Neo, Classic, 3D
  Highlight last move made on board  ✅ shipped
  Promotion piece selector UI (currently auto-promotes to queen)  ✅ shipped
