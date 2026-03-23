@@ -152,23 +152,23 @@ js{
 
 TODO — Post MVP
 
- Board skins: wood, neon, marble
+ Board skins: wood, neon, marble  ✅ wood + starwars themes shipped
  Piece skin variants: Neo, Classic, 3D
- Highlight last move made on board
- Promotion piece selector UI (currently auto-promotes to queen)
+ Highlight last move made on board  ✅ shipped
+ Promotion piece selector UI (currently auto-promotes to queen)  ✅ shipped
  Opening book integration
  Transposition table for stronger AI
  Clock / time controls (blitz, rapid, classical)
  "Share position" link via position ID in URL hash
  Sound effects (move, capture, check)
- Mobile touch drag support
- Export game as PGN
+ Mobile touch drag support  ✅ shipped
+ Export game as PGN  ✅ shipped
 
 
 Notes
 
 chess.js handles all rule enforcement including Chess960 castling edge cases
-AI runs synchronously — for Hard mode (depth 5) consider moving to a Web Worker to avoid UI blocking
+AI runs in a Web Worker (ai.worker.js) — UI stays responsive at all difficulty levels
 Position ID display allows players to share and reproduce specific starting positions
 Undo in 1P mode undoes both the player's move and the AI's response as a pair
 
