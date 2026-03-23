@@ -4,10 +4,11 @@ import userEvent from '@testing-library/user-event';
 import Square from './Square.jsx';
 
 const theme = {
-  lightSquare: '#f0f0f0',
-  darkSquare:  '#6a9fb5',
-  highlight:   '#f6f669',
-  lastMove:    '#baca2b',
+  lightSquare:       '#f0f0f0',
+  darkSquare:        '#6a9fb5',
+  highlight:         '#f6f669',
+  selectedHighlight: '#c8a800',
+  lastMove:          '#baca2b',
 };
 
 // jsdom normalises hex colours to rgb() in computed styles
@@ -33,18 +34,22 @@ describe('Square', () => {
     expect(container.firstChild.style.background).toContain(hexToRgb(theme.darkSquare));
   });
 
-  it('uses highlight colour when selected', () => {
+  it('uses selectedHighlight colour when selected', () => {
     const { container } = render(
       <Square isLight={true} isSelected={true} theme={theme} onClick={() => {}} />
     );
-    expect(container.firstChild.style.background).toContain(hexToRgb(theme.highlight));
+    expect(container.firstChild.style.background).toContain(hexToRgb(theme.selectedHighlight));
   });
 
-  it('uses highlight colour for a legal move target', () => {
+  it('renders a circle overlay for a legal move target', () => {
     const { container } = render(
       <Square isLight={false} isHighlight={true} theme={theme} onClick={() => {}} />
     );
-    expect(container.firstChild.style.background).toContain(hexToRgb(theme.highlight));
+    // Background uses normal square colour, not highlight
+    expect(container.firstChild.style.background).toContain(hexToRgb(theme.darkSquare));
+    // A circle overlay child is rendered
+    const circle = container.firstChild.querySelector('[style*="border-radius: 50%"]');
+    expect(circle).not.toBeNull();
   });
 
   it('uses lastMove colour for last-move squares', () => {

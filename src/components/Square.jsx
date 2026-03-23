@@ -2,9 +2,7 @@ import ChessPiece from './ChessPiece.jsx';
 
 export default function Square({ piece, isLight, isSelected, isHighlight, isLastMove, isDragging, onClick, theme }) {
   const bg = isSelected
-    ? theme.highlight
-    : isHighlight
-    ? theme.highlight
+    ? theme.selectedHighlight
     : isLastMove
     ? theme.lastMove
     : isLight
@@ -21,6 +19,20 @@ export default function Square({ piece, isLight, isSelected, isHighlight, isLast
         <div className="w-full h-full flex items-center justify-center" style={{ opacity: isDragging ? 0 : 1 }}>
           <ChessPiece type={piece.type} color={piece.color} />
         </div>
+      )}
+      {isHighlight && (
+        <div
+          style={{
+            position: 'absolute',
+            borderRadius: '50%',
+            backgroundColor: piece ? 'transparent' : theme.highlight,
+            border: piece ? `4px solid ${theme.highlight}` : 'none',
+            width: piece ? '88%' : '34%',
+            height: piece ? '88%' : '34%',
+            opacity: 0.75,
+            pointerEvents: 'none',
+          }}
+        />
       )}
     </div>
   );

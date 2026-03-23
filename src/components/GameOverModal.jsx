@@ -6,11 +6,17 @@ const BTN_BASE = {
   cursor: 'pointer',
 };
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function GameOverModal({ chess, theme, onNewGame, onRandomGame }) {
   const [dismissed, setDismissed] = useState(false);
-  if (!chess.isGameOver() || dismissed) return null;
+  const isGameOver = chess.isGameOver();
+
+  useEffect(() => {
+    if (!isGameOver) setDismissed(false);
+  }, [isGameOver]);
+
+  if (!isGameOver || dismissed) return null;
 
   let title, subtitle;
   if (chess.isCheckmate()) {

@@ -82,7 +82,7 @@ export default function App() {
 
       <div className="flex flex-1 gap-6 p-6 items-start justify-center flex-wrap">
         {/* Board + eval bar */}
-        <div style={{ display: 'flex', gap: 6, alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
           <EvalBar chess={chess} theme={currentTheme} flipped={flipped} />
           <div style={{ width: '75vmin', minWidth: 240, position: 'relative' }}>
           <Board
