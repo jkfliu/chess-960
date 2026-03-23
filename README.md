@@ -1,32 +1,29 @@
-## Original Build Plan
+# Original Build Plan
 https://claude.ai/public/artifacts/d9979e70-3266-4925-9fb4-b8b4993072ed
 
 Chess960 React Artifact — Build Plan
-Generated from planning session on Claude.ai. Use this to rebuild the project on any machine.
+Generated from planning session on Claude.ai
 
-Architecture
-
+## Architecture
 Single React artifact using chess.js (with built-in Chess960 support)
 Custom minimax + alpha-beta AI written in JS
 Skinnable theme system via a THEMES object at the top — swapping skins = one prop change
 No backend required — fully client-side
 
-
-Dependencies
-
+## Dependencies
 chess.js — board logic, move generation, Chess960 support, check/checkmate detection
 React + hooks (useState, useEffect, useCallback)
 Tailwind CSS (core utility classes only)
 Unicode chess piece characters or SVG icons for pieces
 
-Install for local dev:
+## Install for local dev:
 bashnpm create vite@latest chess960 -- --template react
 cd chess960
 npm install chess.js
 npm install -D tailwindcss
 npm run dev
 
-UI Layout
+## UI Layout
 [ Mode: 1P / 2P ]  [ Difficulty ]  [ Position ID ]  [ New Game ]
 ┌─────────────────────────┬──────────────────────┐
 │                         │  ♟ Captured Pieces   │
@@ -37,10 +34,16 @@ UI Layout
 └─────────────────────────┴──────────────────────┘
             [ Status: "White to move" ]
 
-Features
-PriorityFeatureDetailP0Undo MoveReverts last 2 half-moves (human + AI ply)P0Captured PiecesShows pieces taken per side with material balanceP1Move HistoryAlgebraic notation, scrollable listP1DifficultyEasy / Medium / HardP1Game Mode1P vs Computer or 2P localP1Chess960 StartRandom position each new game, shows ID 0–959P1Position IDEnter a specific ID to replay a known setup
+## Features
+Undo Move: Reverts last 2 half-moves (human + AI ply)
+Captured Pieces: Shows pieces taken per side with material balance
+Move History: Using Algebraic notation, scrollable list
+Difficulty: Easy / Medium / Hard
+Game Mode: 1P vs Computer or 2P local
+Start Random: Opening position each new game, shows ID 0–959
+Position ID: Enter a specific ID to replay a known setup
 
-Chess960 Rules
+## Chess960 Rules
 RuleHandlingRandom back rankGenerated from 960 valid positionsCastlingKing always lands on g/c file — handled by chess.js automaticallyBishop constraintOne bishop on light square, one on dark squareKing constraintKing must start between the two rooksPosition IDDisplayed (0–959) so games are reproducible
 Chess960 Position Generation Algorithm
 1. Place dark-squared bishop on one of 4 dark squares (d1 index: 0-3)
@@ -50,7 +53,7 @@ Chess960 Position Generation Algorithm
 5. King goes in middle of remaining 3 squares, rooks on either side
 Position ID = d1 + 4*d2 + 16*q + 96*n  (range 0-959)
 
-AI Engine
+# AI Engine
 Algorithm: Minimax + Alpha-Beta Pruning
 jsfunction alphaBeta(chess, depth, alpha, beta, isMaximizing) {
   if (depth === 0 || chess.isGameOver()) return evaluate(chess);
@@ -87,10 +90,10 @@ Material count: pawn=1, knight=3, bishop=3.25, rook=5, queen=9
 Piece-square tables: bonuses for pieces on good squares (knights in center, etc.)
 King safety: penalty for exposed king in middlegame
 
-Difficulty Levels
+# Difficulty Levels
 LevelDepthNoiseBehaviourEasy1HighPlays mostly legal but weak movesMedium3LowSolid, beatable playHard5NoneFull alpha-beta, strong play
 
-Skin / Theme System
+# Skin / Theme System
 Defined as a constant at the top of the file. Active theme passed as a prop — zero refactoring needed to add new skins.
 jsconst THEMES = {
   clean: {
@@ -123,7 +126,7 @@ jsconst THEMES = {
 };
 To add a new skin: add a new key to THEMES with the same fields. No other code changes needed.
 
-Component Structure
+# Component Structure
 <App>
   ├── <Toolbar>          — mode, difficulty, position ID, new game button
   ├── <Board>            — 8x8 grid, piece rendering, click/drag handling
@@ -150,7 +153,7 @@ js{
   theme: 'clean',         // active theme key
 }
 
-TODO — Post MVP
+# TODO — Post MVP
 
  Board skins: wood, neon, marble
  Piece skin variants: Neo, Classic, 3D
