@@ -161,6 +161,7 @@ TODO — Post MVP
  Clock / time controls (blitz, rapid, classical)
  "Share position" link via position ID in URL hash
  Sound effects (move, capture, check)
+ AI move delay based on difficulty
  Mobile touch drag support  ✅ shipped
  Export game as PGN  ✅ shipped
 
