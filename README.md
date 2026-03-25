@@ -1,8 +1,7 @@
 # Original Build Plan
 https://claude.ai/public/artifacts/d9979e70-3266-4925-9fb4-b8b4993072ed
 
-Chess960 React Artifact — Build Plan
-Generated from planning session on Claude.ai
+Chess960 React Artifact — Build Plan generated from planning session with Claude.ai
 
 ## Architecture
 Single React artifact using chess.js (with built-in Chess960 support)
@@ -17,7 +16,8 @@ Tailwind CSS (core utility classes only)
 Unicode chess piece characters or SVG icons for pieces
 
 ## Install for local dev:
-bashnpm create vite@latest chess960 -- --template react
+bash
+npm create vite@latest chess960 -- --template react
 cd chess960
 npm install chess.js
 npm install -D tailwindcss
@@ -44,7 +44,12 @@ Start Random: Opening position each new game, shows ID 0–959
 Position ID: Enter a specific ID to replay a known setup
 
 ## Chess960 Rules
-RuleHandlingRandom back rankGenerated from 960 valid positionsCastlingKing always lands on g/c file — handled by chess.js automaticallyBishop constraintOne bishop on light square, one on dark squareKing constraintKing must start between the two rooksPosition IDDisplayed (0–959) so games are reproducible
+Rule Handling 
+Random back rank generated from 960 valid positions
+Castling King always lands on g/c file — handled by chess.js automatically
+Bishop constraint - One bishop on light square, one on dark square
+King constraint - King must start between the two rooks
+Position ID Displayed (0–959) so games are reproducible
 Chess960 Position Generation Algorithm
 1. Place dark-squared bishop on one of 4 dark squares (d1 index: 0-3)
 2. Place light-squared bishop on one of 4 light squares (d2 index: 0-3)
@@ -91,7 +96,10 @@ Piece-square tables: bonuses for pieces on good squares (knights in center, etc.
 King safety: penalty for exposed king in middlegame
 
 # Difficulty Levels
-LevelDepthNoiseBehaviourEasy1HighPlays mostly legal but weak movesMedium3LowSolid, beatable playHard5NoneFull alpha-beta, strong play
+Level  Depth  Noise  Behaviour 
+Easy   1      High   Plays mostly legal but weak moves
+Medium 3      Low    Solid, beatable play
+Hard   5      None   Full alpha-beta, strong play
 
 # Skin / Theme System
 Defined as a constant at the top of the file. Active theme passed as a prop — zero refactoring needed to add new skins.
@@ -130,7 +138,7 @@ To add a new skin: add a new key to THEMES with the same fields. No other code c
 <App>
   ├── <Toolbar>          — mode, difficulty, position ID, new game button
   ├── <Board>            — 8x8 grid, piece rendering, click/drag handling
-  │     └── <Square>    — individual square with piece icon
+  │     └── <Square>     — individual square with piece icon
   └── <Sidebar>
         ├── <CapturedPieces>   — grouped by side, shows material diff
         ├── <MoveHistory>      — scrollable algebraic notation list
@@ -154,23 +162,20 @@ js{
 }
 
 # TODO — Post MVP
-
- Board skins: wood, neon, marble
- Piece skin variants: Neo, Classic, 3D
- Highlight last move made on board
- Promotion piece selector UI (currently auto-promotes to queen)
+ (Done) Board skins: wood, neon, marble
+ (N/A)  Piece skin variants: Neo, Classic, 3D
+ (Done) Highlight last move made on board
+ (Done) Promotion piece selector UI (currently auto-promotes to queen)
  Opening book integration
  Transposition table for stronger AI
  Clock / time controls (blitz, rapid, classical)
  "Share position" link via position ID in URL hash
  Sound effects (move, capture, check)
- Mobile touch drag support
- Export game as PGN
-
+ (Done) Mobile touch drag support
+ (Done) Export game as PGN
 
 # Notes
-
 chess.js handles all rule enforcement including Chess960 castling edge cases
-AI runs synchronously — for Hard mode (depth 5) consider moving to a Web Worker to avoid UI blocking
+AI runs synchronously — for Hard mode (depth 5) consider moving to a Web Worker to avoid UI blocking (Implemented)
 Position ID display allows players to share and reproduce specific starting positions
 Undo in 1P mode undoes both the player's move and the AI's response as a pair
