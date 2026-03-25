@@ -127,10 +127,10 @@ function alphaBeta(chess, depth, alpha, beta, isMaximizing) {
   return bestScore;
 }
 
-const DIFFICULTY = {
-  easy:   { depth: 1, noise: 200 },
-  medium: { depth: 3, noise: 50 },
-  hard:   { depth: 5, noise: 0 },
+export const DIFFICULTY = {
+  easy:   { depth: 1, noise: 200, moveDelay: 300 },
+  medium: { depth: 3, noise: 50,  moveDelay: 500 },
+  hard:   { depth: 5, noise: 0,   moveDelay: 1000 },
 };
 
 export function getBestMove(chess, difficulty = 'medium') {

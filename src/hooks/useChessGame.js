@@ -3,6 +3,7 @@ import { Chess } from '../lib/Chess.js';
 import { positionToFen } from '../chess960.js';
 import { randomPositionId } from '../constants.js';
 import AIWorker from '../engine/ai.worker.js?worker';
+import { DIFFICULTY } from '../engine/ai.js';
 
 function capturedFromHistory(chess) {
   const captured = { w: [], b: [] };
@@ -80,9 +81,10 @@ export function useChessGame({ gameMode, playerColor, difficulty }) {
     setAiThinking(true);
     const seq = ++aiSeqRef.current;
 
+    const delay = DIFFICULTY[difficulty]?.moveDelay ?? 500;
     const timer = setTimeout(() => {
       workerRef.current?.postMessage({ fen: chess.fen(), difficulty, seq });
-    }, 200);
+    }, delay);
 
     return () => clearTimeout(timer);
   }, [tick, gameMode, playerColor, difficulty]); // eslint-disable-line react-hooks/exhaustive-deps
