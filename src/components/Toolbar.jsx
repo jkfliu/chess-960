@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { clamp, BOARD_SIZE, POSITION_COUNT } from '../constants.js';
 
 function Btn({ active, onClick, children, theme, disabled }) {
   return (
@@ -32,9 +33,9 @@ function Group({ label, currentTheme, children }) {
 
 export default function Toolbar({
   gameMode, difficulty, positionId, themeName, currentTheme,
-  playerColor, aiThinking,
+  playerColor, aiThinking, boardSize,
   onModeChange, onDifficultyChange, onPositionIdLoad, onNewGame, onRandomGame,
-  onThemeChange, onPlayerColorChange,
+  onThemeChange, onPlayerColorChange, onBoardSizeChange,
 }) {
   const detailsRef = useRef(null);
 
@@ -47,7 +48,7 @@ export default function Toolbar({
 
   const content = (
     <div
-      className="flex flex-wrap items-end gap-6 px-6 py-4"
+      className="flex flex-wrap items-end gap-4 px-6 py-2"
       style={{ backgroundColor: currentTheme.panelBg }}
     >
       <Group label="Mode" currentTheme={currentTheme}>
@@ -81,7 +82,7 @@ export default function Toolbar({
           key={positionId}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              const val = Math.max(0, Math.min(959, parseInt(e.target.value) || 0));
+              const val = clamp(parseInt(e.target.value) || 0, 0, POSITION_COUNT - 1);
               onPositionIdLoad(val);
             }
           }}
@@ -103,6 +104,12 @@ export default function Toolbar({
             {label}
           </Btn>
         ))}
+      </Group>
+
+      <Group label="Board Size" currentTheme={currentTheme}>
+        <Btn onClick={() => onBoardSizeChange(boardSize - BOARD_SIZE.STEP)} theme={currentTheme} disabled={boardSize <= BOARD_SIZE.MIN}>−</Btn>
+        <span style={{ color: currentTheme.text, fontSize: 13, minWidth: 36, textAlign: 'center', alignSelf: 'center' }}>{boardSize}%</span>
+        <Btn onClick={() => onBoardSizeChange(boardSize + BOARD_SIZE.STEP)} theme={currentTheme} disabled={boardSize >= BOARD_SIZE.MAX}>+</Btn>
       </Group>
 
       <Group label="Game" currentTheme={currentTheme}>

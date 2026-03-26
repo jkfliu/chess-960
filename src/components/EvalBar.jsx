@@ -1,4 +1,5 @@
 import { evaluate } from '../engine/ai.js';
+import { clamp } from '../constants.js';
 
 const MAX_CP = 800; // centipawns at which the bar is fully one-sided
 
@@ -10,7 +11,7 @@ export default function EvalBar({ chess, theme, flipped }) {
   const whitePct = isCheckmate
     ? (chess.turn() === 'w' ? 0 : 100)
     : isDraw ? 50
-    : Math.round(50 + Math.max(-1, Math.min(1, cp / MAX_CP)) * 50);
+    : Math.round(50 + clamp(cp / MAX_CP, -1, 1) * 50);
 
   const label = isCheckmate ? 'M'
     : isDraw || cp === 0    ? '='

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { THEMES } from './themes/index.js';
-import { randomPositionId } from './constants.js';
+import { randomPositionId, clamp, BOARD_SIZE } from './constants.js';
 import { useChessGame } from './hooks/useChessGame.js';
 import Board from './components/Board.jsx';
 import PromotionPicker from './components/PromotionPicker.jsx';
@@ -27,6 +27,7 @@ export default function App() {
   const [playerColor, setPlayerColor] = useState('w');
   const [difficulty, setDifficulty] = useState('medium');
   const [themeName, setThemeName] = useState('clean');
+  const [boardSize, setBoardSize] = useState(BOARD_SIZE.DEFAULT);
 
   const {
     chess, history, positionId, startingFen, selectedSquare, legalMoves, lastMove,
@@ -78,13 +79,15 @@ export default function App() {
         onRandomGame={() => resetGame(randomPositionId())}
         onThemeChange={setThemeName}
         onPlayerColorChange={handlePlayerColorChange}
+        boardSize={boardSize}
+        onBoardSizeChange={size => setBoardSize(clamp(size, BOARD_SIZE.MIN, BOARD_SIZE.MAX))}
       />
 
       <div className="flex flex-1 gap-6 p-6 items-start justify-center flex-wrap">
         {/* Board + eval bar */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
           <EvalBar chess={chess} theme={currentTheme} flipped={flipped} />
-          <div style={{ width: '75vmin', minWidth: 240, position: 'relative' }}>
+          <div style={{ width: `${boardSize}vmin`, minWidth: 240, position: 'relative' }}>
           <Board
             chess={chess}
             selectedSquare={selectedSquare}
